@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Welcome, {{ current_user.username }}</h1>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Your Timetable</h5>
+                </div>
+                <div class="card-body">
+                    <div class="timetable-grid">
+                        <div class="timetable-cell timetable-header"></div>
+                        <div class="timetable-cell timetable-header">Monday</div>
+                        <div class="timetable-cell timetable-header">Tuesday</div>
+                        <div class="timetable-cell timetable-header">Wednesday</div>
+                        <div class="timetable-cell timetable-header">Thursday</div>
+                        <div class="timetable-cell timetable-header">Friday</div>
+                        
+                        {% for period in range(1, 9) %}
+                        <div class="timetable-cell period-time">Period {{ period }}</div>
+                        {% for day in range(5) %}
+                        <div class="timetable-cell">
+                            {% for entry in entries %}
+                            {% if entry.day == day and entry.period == period %}
+                            <div class="subject-cell" data-subject-color="{{ entry.subject.color_code }}">
+                                <div class="subject-name">{{ entry.subject.name }}</div>
+                                <div class="class-name">{{ entry.class.name }}</div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Today's Schedule</h5>
+                </div>
+                <div class="card-body">
+                    {% set today = entries|selectattr("day", "equalto", now.weekday())|list %}
+                    {% if today %}
+                    <ul class="list-group">
+                        {% for entry in today|sort(attribute="period") %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Period {{ entry.period }}</strong>
+                                    <div>{{ entry.subject.name }}</div>
+                                    <small class="text-muted">{{ entry.class.name }}</small>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted mb-0">No classes scheduled for today.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

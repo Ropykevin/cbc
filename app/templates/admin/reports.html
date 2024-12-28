@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Timetable Reports</h2>
+    
+    <!-- Teacher Workload Report -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3 class="card-title h5 mb-0">Teacher Workload Summary</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Teacher</th>
+                            <th>Code</th>
+                            <th>Total Hours</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for teacher in workload_report %}
+                        <tr>
+                            <td>{{ teacher.username }}</td>
+                            <td>{{ teacher.teacher_code }}</td>
+                            <td>{{ teacher.total_hours }}</td>
+                            <td>
+                                {% if teacher.total_hours >= 30 %}
+                                <span class="badge bg-danger">Overloaded</span>
+                                {% elif teacher.total_hours >= 25 %}
+                                <span class="badge bg-warning">Near Capacity</span>
+                                {% else %}
+                                <span class="badge bg-success">Normal</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Unassigned Subjects -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3 class="card-title h5 mb-0">Unassigned Subjects</h3>
+        </div>
+        <div class="card-body">
+            {% if unassigned_subjects %}
+            <div class="list-group">
+                {% for subject in unassigned_subjects %}
+                <div class="list-group-item">
+                    <h5 class="mb-1">{{ subject.name }}</h5>
+                    <p class="mb-1">Code: {{ subject.code }}</p>
+                    <small>Required lessons per week: {{ subject.lessons_per_week }}</small>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-success">All subjects have been assigned to teachers.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Timetable Gaps Analysis -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title h5 mb-0">Timetable Gaps Analysis</h3>
+        </div>
+        <div class="card-body">
+            <form class="mb-3">
+                <div class="row">
+                    <div class="col-md-6">
+                        <select name="class_id" class="form-select">
+                            {% for class in classes %}
+                            <option value="{{ class.id }}">{{ class.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary">Analyze</button>
+                    </div>
+                </div>
+            </form>
+            
+            {% if gaps %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Start Period</th>
+                            <th>End Period</th>
+                            <th>Gap Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for gap in gaps %}
+                        <tr>
+                            <td>{{ gap.get_day_name() }}</td>
+                            <td>{{ gap.start_period }}</td>
+                            <td>{{ gap.end_period }}</td>
+                            <td>{{ gap.gap_size }} period(s)</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-success">No gaps found in the selected class timetable.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

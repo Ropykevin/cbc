@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center mb-4">Welcome to School Timetable Management System</h1>
+        
+        {% if current_user.is_authenticated %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Hello, {{ current_user.username }}!</h5>
+                    <p class="card-text">
+                        You are logged in as a {{ current_user.role }}.
+                        {% if current_user.role == 'admin' %}
+                            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary">Go to Admin Dashboard</a>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center">
+                <p class="lead">Please login or register to access the timetable system.</p>
+                <div class="mt-4">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary me-2">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Register</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

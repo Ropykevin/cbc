@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="CBC online Timetable generator">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <meta name="keywords"
+        content="CBC, CBC Timetable generator, timetable, generate, timetable maker,fast generator, best online generator">
+    <title> School Timetable Generator</title>
+
+    <!-- Font -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Themify Icons -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themify-icons.css') }}">
+    <!-- Owl carousel -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css') }}">
+    <!-- Main css -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='dashboard.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css2/style.css') }}" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Fixed Navbar -->
+    <div class="nav-menu fixed-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <nav class="navbar navbar-dark navbar-expand-lg">
+                        <a class="navbar-brand" href="{{ url_for('main.index') }}"> CBC Timetable Generator</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar"
+                            aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation"> <span
+                                class="navbar-toggler-icon"></span> </button>
+
+                        <div class="collapse navbar-collapse" id="navbar">
+                            <ul class="navbar-nav ml-auto">
+                                {% if current_user.is_authenticated %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+
+                            <ul class="navbar-nav">
+                                {% if current_user.is_authenticated %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{  url_for('admin.timetable')  }}">myTimetables</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ url_for('admin.dashboard') }}">My Package</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                        data-bs-toggle="dropdown">
+                                        {{ current_user.name }}
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}">Profile</a>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                                    </ul>
+                                </li>
+                                {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#home">HOME <span
+                                            class="sr-only">(current)</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#features">FEATURES</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#gallery">GALLERY</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#pricing">PRICING</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#contact">CONTACT</a>
+                                </li>
+                                <li class="nav-item">
+                                    <button style="border: 1px solid black;"><a class="nav-link"
+                                            href="{{ url_for('auth.login') }}"
+                                            style="color: black; background-color: burlywood;">My Account</a></button>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Content Block -->
+    <div class="content" style="padding-top: 100px;">  <!-- Adjust padding to match navbar height -->
+        {% block content %}
+        <!-- Dashboard content goes here -->
+        <h1>Welcome to the Dashboard</h1>
+        {% endblock %}
+    </div>
+
+    <!-- JS Files -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/jquery-3.2.1.min.js"></script>
+    <script src="static/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/owl.carousel.min.js"></script>
+    <script src="static/js/script.js"></script>
+    <script src="/app/static/js/timetable.js"></script>
+    <script>
+        function generateTimetables() {
+                const selectedClasses = Array.from(document.querySelectorAll('input[name="classes"]:checked'))
+                    .map(input => input.value);
+                console.log(selectedClasses)
+
+                if (selectedClasses.length === 0) {
+                    alert('Please select at least one class');
+                    return;
+                }
+
+                const options = {
+                    optimizeTeacherLoad: document.getElementById('optimizeTeacherLoad').checked,
+                    avoidConsecutive: document.getElementById('avoidConsecutive').checked,
+                    distributeSubjects: document.getElementById('distributeSubjects').checked
+                };
+
+                // Show loading state
+                const generateBtn = document.querySelector('#generateModal .btn-primary');
+                const originalText = generateBtn.innerHTML;
+                generateBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Generating...';
+                generateBtn.disabled = true;
+
+                console.log('Selected classes:', selectedClasses);
+                console.log('Options:', options);
+
+                // Make API call to generate timetables
+                Promise.all(
+                    selectedClasses.map(classId => {
+                        console.log(`Generating timetable for class: ${classId}`);
+                        return fetch(`/admin/timetable/${classId}/generate`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify(options)
+                        });
+                    })
+                ).then(() => {
+                    location.reload();
+                }).catch(error => {
+                    console.error('Error generating timetables:', error);
+                    alert('Failed to generate timetables. Please try again.');
+                    generateBtn.innerHTML = originalText;
+                    generateBtn.disabled = false;
+                });
+            }
+        // function generateTimetables() {
+        //         const selectedClasses = Array.from(document.querySelectorAll('input[name="classes"]:checked'))
+        //             .map(input => input.value);
+
+        //         if (selectedClasses.length === 0) {
+        //             alert('Please select at least one class');
+        //             return;
+        //         }
+
+        //         const options = {
+        //             optimizeTeacherLoad: document.getElementById('optimizeTeacherLoad').checked,
+        //             avoidConsecutive: document.getElementById('avoidConsecutive').checked,
+        //             distributeSubjects: document.getElementById('distributeSubjects').checked
+        //         };
+
+        //         // Show loading state
+        //         const generateBtn = document.querySelector('#generateModal .btn-primary');
+        //         const originalText = generateBtn.innerHTML;
+        //         generateBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Generating...';
+        //         generateBtn.disabled = true;
+
+        //         // Make API call to generate timetables
+        //         console.log(classId)
+
+        //         Promise.all(selectedClasses.map(classId =>
+                    
+        //             fetch(`/admin/timetable/${classId}/generate`, {
+        //                 method: 'POST',
+        //                 headers: {
+        //                     'Content-Type': 'application/json',
+        //                     'X-CSRFToken': '{{ csrf_token() }}'
+        //                 },
+        //                 body: JSON.stringify(options)
+        //             })
+                    
+        //         )).then(() => {
+        //             location.reload();
+        //         }).catch(error => {
+        //             alert('Failed to generate timetables. Please try again.');
+        //             generateBtn.innerHTML = originalText;
+        //             generateBtn.disabled = false;
+        //         });
+        //     }
+        // function generateTimetable(classId) {
+        //     fetch(`/admin/timetable/${classId}/generate`, {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'X-CSRFToken': '{{ csrf_token() }}'  // Add this if CSRF protection is enabled
+        //         }
+        //     })
+        //     .then(response => {
+        //         if (response.ok) {
+        //             window.location.reload();  // Reload the page to reflect changes
+        //         } else {
+        //             alert('Failed to generate timetable.');
+        //         }
+        //     })
+        //     .catch(error => console.error('Error:', error));
+        // }
+    
+    </script>
+
+</body>
+
+</html>

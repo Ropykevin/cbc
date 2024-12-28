@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center my-4">Timetable for {{ class_obj.name }}</h1>
+
+<div class="timetable-container">
+  <table class="timetable table table-bordered text-center">
+    <thead>
+      <tr>
+        <th>Day / Period</th>
+        {% for period in range(1, 8) %} <!-- Assuming 7 periods per day -->
+        <th>Period {{ period }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for day in range(0, 5) %} <!-- Assuming Monday to Friday -->
+      <tr>
+        <td>
+          {% if day == 0 %} Monday
+          {% elif day == 1 %} Tuesday
+          {% elif day == 2 %} Wednesday
+          {% elif day == 3 %} Thursday
+          {% elif day == 4 %} Friday
+          {% endif %}
+        </td>
+        {% for period in range(1, 8) %}
+        <td>
+          {% set entry = timetable|selectattr("day", "equalto", day) 
+                                     |selectattr("period", "equalto", period) 
+                                     |first %}
+          {% if entry %}
+          <strong>{{ entry.subject.name }}</strong><br>
+          <em>{{ entry.teacher.name }}</em>
+          {% else %}
+          Free Period
+          {% endif %}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .timetable-container {
+    margin: 20px auto;
+    max-width: 1200px;
+  }
+  .timetable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+  }
+  .timetable th, .timetable td {
+    padding: 10px;
+    vertical-align: middle;
+  }
+  .timetable thead {
+    background-color: #4CAF50;
+    color: white;
+  }
+  .timetable tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+  }
+  .timetable tbody tr:nth-child(even) {
+    background-color: #fff;
+  }
+  .timetable tbody td {
+    background-color: #eef;
+  }
+</style>
+{% endblock %}

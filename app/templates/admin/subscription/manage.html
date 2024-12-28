@@ -1,0 +1,134 @@
+{% extends "admin/base.html" %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    <div class="sidebar" style="width: 250px; background-color: #2C3E50; color: white; height: 100vh; padding-top: 20px; position: fixed; top: 0; left: 0; z-index: 1000;">
+        <ul class="nav flex-column" style="list-style-type: none; padding-left: 0;">
+            <li class="nav-item">
+                <a href="{{ url_for('admin.dashboard') }}" class="nav-link text-white" style="padding: 15px; font-size: 18px;">
+                    <i class="bi bi-house-door" style="font-size: 20px;"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.manage_teachers') }}" class="nav-link text-white" style="padding: 15px; font-size: 18px;">
+                    <i class="bi bi-person-badge" style="font-size: 20px;"></i> Teachers
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.manage_subjects') }}" class="nav-link text-white" style="padding: 15px; font-size: 18px;">
+                    <i class="bi bi-book" style="font-size: 20px;"></i> Subjects
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.manage_classes') }}" class="nav-link text-white" style="padding: 15px; font-size: 18px;">
+                    <i class="bi bi-journal-check" style="font-size: 20px;"></i> Classes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.manage_timetables') }}" class="nav-link text-white" style="padding: 15px; font-size: 18px;">
+                    <i class="bi bi-calendar-check" style="font-size: 20px;"></i> Timetable
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.settings') }}" class="nav-link text-white" style="padding: 15px; font-size: 18px;">
+                    <i class="bi bi-gear" style="font-size: 20px;"></i> Settings
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="main-content" style="margin-left: 250px; padding: 20px;">
+    <h1 class="h2 mb-4">Subscription Management</h1>
+    
+    <!-- Current Subscription -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Current Subscription</h5>
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <h3 class="text-capitalize mb-2">{{ current_tier }} Plan</h3>
+                    <p class="mb-0 text-muted">
+                        {% if current_tier == 'basic' %}
+                        Limited features with basic functionality
+                        {% elif current_tier == 'standard' %}
+                        Enhanced features for growing schools
+                        {% else %}
+                        Full access to all premium features
+                        {% endif %}
+                    </p>
+                </div>
+                {% if current_tier != 'premium' %}
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#upgradeModal">
+                    Upgrade Now
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Subscription Plans -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for tier in subscription_tiers %}
+        <div class="col">
+            <div class="card h-100 {% if tier.name == current_tier %}border-primary{% endif %}">
+                <div class="card-header {% if tier.name == current_tier %}bg-primary text-white{% endif %}">
+                    <h5 class="card-title text-center mb-0 text-capitalize">{{ tier.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h2 class="display-6">${{ tier.price }}<small class="text-muted">/mo</small></h2>
+                    </div>
+                    <ul class="list-unstyled">
+                        {% for feature in tier.features %}
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            {{ feature.description }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent text-center">
+                    {% if tier.name == current_tier %}
+                    <button class="btn btn-outline-primary" disabled>Current Plan</button>
+                    {% else %}
+                    <form method="POST" action="{{ url_for('admin.upgrade_subscription', tier_name=tier.name) }}">
+                        <button type="submit" class="btn btn-primary">Upgrade to {{ tier.name|title }}</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Upgrade Modal -->
+<div class="modal fade" id="upgradeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upgrade Subscription</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Choose your payment method to upgrade your subscription:</p>
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="bi bi-credit-card me-2"></i> Credit Card
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="bi bi-paypal me-2"></i> PayPal
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="bi bi-bank me-2"></i> Bank Transfer
+                    </a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Proceed to Payment</button>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}

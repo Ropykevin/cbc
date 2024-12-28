@@ -1,0 +1,39 @@
+{% extends "email/base.html" %}
+
+{% block content %}
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <h2>Schedule Change Notification</h2>
+    
+    <p>Dear {{ teacher.username }},</p>
+    
+    <p>There has been a change in your teaching schedule:</p>
+    
+    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">
+        <p><strong>Date:</strong> {{ change.change_date.strftime('%Y-%m-%d') }}</p>
+        
+        {% if change.previous_teacher_id == teacher.id %}
+        <p><strong>Removed from:</strong></p>
+        <ul>
+            <li>Subject: {{ change.previous_subject.name }}</li>
+            <li>Class: {{ change.timetable_entry.class.name }}</li>
+            <li>Day: {{ change.timetable_entry.get_day_name() }}</li>
+            <li>Period: {{ change.timetable_entry.period }}</li>
+        </ul>
+        {% endif %}
+        
+        {% if change.new_teacher_id == teacher.id %}
+        <p><strong>Added to:</strong></p>
+        <ul>
+            <li>Subject: {{ change.new_subject.name }}</li>
+            <li>Class: {{ change.timetable_entry.class.name }}</li>
+            <li>Day: {{ change.timetable_entry.get_day_name() }}</li>
+            <li>Period: {{ change.timetable_entry.period }}</li>
+        </ul>
+        {% endif %}
+    </div>
+    
+    <p>Please review these changes and ensure they align with your schedule.</p>
+    
+    <p>Best regards,<br>School Administration</p>
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "admin/base.html" %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    <div class="sidebar" style="width: 250px; background-color: #2C3E50; color: white; height: 100vh; padding-top: 20px; position: fixed; top: 0; left: 0; z-index: 1000;">
+        <ul class="nav flex-column" style="list-style-type: none; padding-left: 0;">
+            <li class="nav-item">
+                <a href="{{ url_for('admin.dashboard') }}" class="nav-link text-white" style="padding: 15px; font-size: 18px;">
+                    <i class="bi bi-house-door" style="font-size: 20px;"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.manage_teachers') }}" class="nav-link text-white" style="padding: 15px; font-size: 18px;">
+                    <i class="bi bi-person-badge" style="font-size: 20px;"></i> Teachers
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.manage_subjects') }}" class="nav-link text-white" style="padding: 15px; font-size: 18px;">
+                    <i class="bi bi-book" style="font-size: 20px;"></i> Subjects
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.manage_classes') }}" class="nav-link text-white" style="padding: 15px; font-size: 18px;">
+                    <i class="bi bi-journal-check" style="font-size: 20px;"></i> Classes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.manage_timetables') }}" class="nav-link text-white" style="padding: 15px; font-size: 18px;">
+                    <i class="bi bi-calendar-check" style="font-size: 20px;"></i> Timetable
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin.settings') }}" class="nav-link text-white" style="padding: 15px; font-size: 18px;">
+                    <i class="bi bi-gear" style="font-size: 20px;"></i> Settings
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content" style="margin-left: 250px; padding: 20px;">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Change Password</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Current Password</label>
+                            {{ form.current_password(class="form-control") }}
+                            {% for error in form.current_password.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">New Password</label>
+                            {{ form.new_password(class="form-control") }}
+                            {% for error in form.new_password.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Confirm New Password</label>
+                            {{ form.confirm_password(class="form-control") }}
+                            {% for error in form.confirm_password.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Notification Settings</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                        <label class="form-check-label" for="emailNotifications">
+                            Email Notifications
+                        </label>
+                    </div>
+                    
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="smsNotifications">
+                        <label class="form-check-label" for="smsNotifications">
+                            SMS Notifications
+                        </label>
+                    </div>
+                    
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="timetableChanges" checked>
+                        <label class="form-check-label" for="timetableChanges">
+                            Timetable Change Alerts
+                        </label>
+                    </div>
+                    
+                    <button type="button" class="btn btn-primary">Save Notification Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}

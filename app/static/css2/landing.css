@@ -1,0 +1,109 @@
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #4a90e2 0%, #2c5282 100%);
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+}
+
+/* Features Section */
+.features .card {
+    transition: transform 0.3s ease;
+}
+
+.features .card:hover {
+    transform: translateY(-5px);
+}
+
+.features .bi {
+    color: #4a90e2;
+}
+
+/* Testimonials */
+.testimonials .card {
+    transition: transform 0.3s ease;
+}
+
+.testimonials .card:hover {
+    transform: translateY(-5px);
+}
+
+/* Progress Steps */
+.progress-steps {
+    position: relative;
+    margin: 30px 0;
+}
+
+.step-item {
+    position: relative;
+    text-align: center;
+    flex: 1;
+}
+
+.step-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.step-item.active .step-circle {
+    background-color: #4a90e2;
+    color: white;
+}
+
+.step-line {
+    position: absolute;
+    top: 15px;
+    height: 2px;
+    background-color: #e9ecef;
+    flex: 1;
+    margin: 0 15px;
+}
+
+.step-line.active {
+    background-color: #4a90e2;
+}
+
+.step-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.step-item.active .step-label {
+    color: #4a90e2;
+    font-weight: 600;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero {
+        min-height: 400px;
+        text-align: center;
+    }
+    
+    .step-label {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .progress-steps {
+        flex-direction: column;
+    }
+    
+    .step-line {
+        display: none;
+    }
+    
+    .step-item {
+        margin-bottom: 20px;
+    }
+}

@@ -1,0 +1,28 @@
+@media print {
+    .navbar,
+    .btn,
+    footer {
+        display: none !important;
+    }
+    
+    .timetable-grid {
+        width: 100%;
+        margin: 0;
+        border: 1px solid #000;
+    }
+    
+    .timetable-cell {
+        border: 1px solid #000;
+        padding: 5px;
+        page-break-inside: avoid;
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    @page {
+        margin: 1cm;
+    }
+}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ 'Edit' if teacher else 'Add' }} Teacher</h2>
+    
+    <form method="POST" class="mt-4">
+        {{ form.hidden_tag() }}
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Full Name</label>
+                {{ form.full_name(class="form-control") }}
+                {% for error in form.full_name.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            </div>
+            
+            <div class="col-md-6">
+                <label class="form-label">Email</label>
+                {{ form.email(class="form-control") }}
+                {% for error in form.email.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Maximum Hours per Week</label>
+                {{ form.max_hours(class="form-control") }}
+                {% for error in form.max_hours.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            </div>
+            
+            <div class="col-md-6">
+                <label class="form-label">Subjects</label>
+                <div class="border p-3 rounded">
+                    {% for subject in form.subjects %}
+                        <div class="form-check">
+                            {{ subject(class="form-check-input") }}
+                            {{ subject.label(class="form-check-label") }}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% for error in form.subjects.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{{ url_for('admin.manage_teachers') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">Subscription Plans</h1>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <!-- Basic Plan -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header bg-light">
+                    <h3 class="card-title text-center mb-0">Basic</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h4 class="display-6">Free</h4>
+                        <p class="text-muted">Perfect for small schools</p>
+                    </div>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Student enrollment management</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Basic attendance tracking</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Simple grade book</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Parent communication portal</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent text-center">
+                    <a href="{{ url_for('subscription.select_plan', plan='basic') }}" class="btn btn-outline-primary">Select Plan</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Standard Plan -->
+        <div class="col">
+            <div class="card h-100 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title text-center mb-0">Standard</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h4 class="display-6">$99<small class="text-muted">/mo</small></h4>
+                        <p class="text-muted">Most popular choice</p>
+                    </div>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>All Basic features</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Advanced reporting</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Curriculum planning tools</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Resource management</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Financial tracking</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent text-center">
+                    <a href="{{ url_for('subscription.select_plan', plan='standard') }}" class="btn btn-primary">Select Plan</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Premium Plan -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="card-title text-center mb-0">Premium</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h4 class="display-6">$199<small class="text-muted">/mo</small></h4>
+                        <p class="text-muted">For large institutions</p>
+                    </div>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>All Standard features</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Learning management system</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Advanced analytics</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>API integration</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Custom branding</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Priority support</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent text-center">
+                    <a href="{{ url_for('subscription.select_plan', plan='premium') }}" class="btn btn-dark">Select Plan</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

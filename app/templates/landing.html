@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 mb-4">Streamline Your School Timetable Management</h1>
+                <p class="lead mb-4">Effortlessly create and manage school timetables with our intelligent scheduling system.</p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg">Start Free Trial</a>
+                    <button class="btn btn-outline-light btn-lg" data-bs-toggle="modal" data-bs-target="#demoVideo">Watch Demo</button>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="{{ url_for('static', filename='img/hero-image.svg') }}" alt="Timetable Management" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="features py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Why Choose Our Platform?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-check display-4 text-primary mb-3"></i>
+                        <h3 class="h4">Smart Scheduling</h3>
+                        <p>Automatically generate conflict-free timetables that optimize teacher and classroom resources.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-bell display-4 text-primary mb-3"></i>
+                        <h3 class="h4">Real-time Updates</h3>
+                        <p>Instant notifications for schedule changes and updates to keep everyone informed.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-graph-up display-4 text-primary mb-3"></i>
+                        <h3 class="h4">Analytics & Reports</h3>
+                        <p>Comprehensive insights into teacher workload and resource utilization.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">What School Administrators Say</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <p class="lead mb-3">"This system has revolutionized how we manage our school timetables. The automation saves us hours of work each term."</p>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ url_for('static', filename='img/testimonial1.jpg') }}" alt="Principal" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                            <div>
+                                <h4 class="h6 mb-1">Sarah Johnson</h4>
+                                <p class="small text-muted mb-0">Principal, Lincoln High School</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <p class="lead mb-3">"The real-time updates and conflict detection have made scheduling so much easier. Our teachers love the mobile access."</p>
+                        <div class="d-flex align-items-center">
+                            <img src="{{ url_for('static', filename='img/testimonial2.jpg') }}" alt="Administrator" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                            <div>
+                                <h4 class="h6 mb-1">Michael Chen</h4>
+                                <p class="small text-muted mb-0">Administrator, St. Mary's Academy</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Frequently Asked Questions</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                How long does it take to implement the system?
+                            </button>
+                        </h3>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Most schools are up and running within 1-2 days. Our setup wizard guides you through the process of adding teachers, classes, and subjects.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                What's included in the free trial?
+                            </button>
+                        </h3>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                The 30-day free trial includes all premium features: automated scheduling, unlimited teachers, email notifications, and priority support.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                Can we import existing timetable data?
+                            </button>
+                        </h3>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes, you can import data from Excel spreadsheets. We provide templates and step-by-step guidance for data migration.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Demo Video Modal -->
+<div class="modal fade" id="demoVideo" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Watch How It Works</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="ratio ratio-16x9">
+                    <iframe src="https://www.youtube.com/embed/demo-video-id" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

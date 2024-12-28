@@ -1,0 +1,35 @@
+/* Custom styles */
+.timetable-grid {
+    display: grid;
+    grid-template-columns: auto repeat(5, 1fr);
+    gap: 1px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.timetable-cell {
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    background-color: white;
+}
+
+.timetable-header {
+    font-weight: bold;
+    background-color: #e9ecef;
+}
+
+.period-time {
+    font-weight: bold;
+    background-color: #e9ecef;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .timetable-grid {
+        font-size: 0.8rem;
+    }
+    
+    .timetable-cell {
+        padding: 5px;
+    }
+}

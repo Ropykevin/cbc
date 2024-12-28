@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; margin-top: 0;width: auto;">
+    <div class="row justify-content-center" style="width: 100%; max-width: 800px; margin-top: 50px;">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <!-- Progress Steps -->
+                    <div class="progress-steps mb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            {% for step in range(1, 4) %}
+                            <div class="text-center">
+                                <div class="step-item {% if current_step >= step %}active{% endif %}">
+                                    <div class="step-circle">
+                                        {{ step }}
+                                    </div>
+                                    <div class="step-label mt-1">
+                                        {% if step == 1 %}School Details
+                                        {% elif step == 2 %}Administrator Setup
+                                        {% else %}Class Configuration{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% if not loop.last %}
+                            <div class="step-line {% if current_step > step %}active{% endif %} flex-grow-1"></div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Form Steps -->
+                    <form method="POST" class="needs-validation mt-5" novalidate>
+                        {{ form.hidden_tag() }}
+                        {% if current_step == 1 %}
+                        <!-- School Details -->
+                        <div class="mb-3">
+                            <label class="form-label">School Name*</label>
+                            {{ form.school_name(class="form-control", required=true) }}
+                            <div class="invalid-feedback">Please enter the school name.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Official Institution Email*</label>
+                            {{ form.email_domain(class="form-control", required=true) }}
+                            <div class="invalid-feedback">Please provide an email domain.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number*</label>
+                            {{ form.phone(class="form-control", required=true) }}
+                            <div class="invalid-feedback">Please provide a phone number.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">School Type*</label>
+                            {{ form.school_type(class="form-select", required=true) }}
+                            <div class="invalid-feedback">Please select a school type.</div>
+                        </div>
+                        {% elif current_step == 2 %}
+                        <!-- Administrator Setup -->
+                        <div class="mb-3">
+                            <label class="form-label">Full Name*</label>
+                            {{ form.admin_name(class="form-control", required=true) }}
+                            <div class="invalid-feedback">Please enter the administrator's full name.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Work Email*</label>
+                            {{ form.admin_email(class="form-control", required=true) }}
+                            <div class="invalid-feedback">Please provide a valid work email.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password*</label>
+                            {{ form.password(class="form-control", required=true) }}
+                            <div class="form-text">Must be at least 8 characters, with uppercase, lowercase, and a number.</div>
+                            <div class="invalid-feedback">Please enter a valid password.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Confirm Password*</label>
+                            {{ form.password_confirm(class="form-control", required=true) }}
+                            <div class="invalid-feedback">Passwords do not match.</div>
+                        </div>
+                        {% else %}
+                        <!-- Class Configuration -->
+                        <div class="mb-3">
+                            <label class="form-label">Grade Levels*</label>
+                            {{ form.grade_levels(class="form-select", multiple=true, required=true) }}
+                            <div class="invalid-feedback">Please select at least one grade level.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Streams per grade*</label>
+                            {{ form.sections_per_grade(class="form-control", type="number", required=true) }}
+                            <div class="invalid-feedback">Please specify sections per grade.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Academic Year Structure*</label>
+                            {{ form.academic_structure(class="form-select", required=true) }}
+                            <div class="invalid-feedback">Please select an academic year structure.</div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Navigation Buttons -->
+                        <div class="d-flex justify-content-between mt-4">
+                            {% if current_step > 1 %}
+                            <button type="submit" name="previous" class="btn btn-secondary">Previous</button>
+                            {% else %}
+                            <div></div>
+                            {% endif %}
+                            <button type="submit" name="next" class="btn btn-primary">
+                                {% if current_step == 3 %}Complete Registration{% else %}Next{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Form validation
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+});
+</script>
+{% endblock %}

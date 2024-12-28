@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Timetable{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] %}
+    <h1 class="mb-4">Timetable for Class: {{ class_name }} (ID: {{ class_id }})</h1>
+    
+    <div class="timetable-grid">
+        <div class="timetable-cell timetable-header"></div>
+        {% for day in days %}
+            <div class="timetable-cell timetable-header">{{ day }}</div>
+        {% endfor %}
+        
+        {% for period in range(1, 9) %}
+            <div class="timetable-cell period-time">Period {{ period }}</div>
+            {% for day in days %}
+                <div class="timetable-cell">
+                    {% set entry = entries.get((day, period)) %}
+                    {% if entry %}
+                    <!-- <h1>{{entry}}</h1> -->
+                        <div class="subject">{{ entry.subject_name }}</div>
+                        <div class="teacher">{{ entry.teacher_name }}</div>
+                    {% else %}
+                        <div class="subject">No class</div>
+                        <div class="teacher">N/A</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+
+<!-- <div class="container">
+    <h1 class="mb-4">Timetable for Class: {{ class_name }} (ID: {{ class_id }})</h1>
+    
+    <div class="timetable-grid">
+        <div class="timetable-cell timetable-header"></div>
+        <div class="timetable-cell timetable-header">Monday</div>
+        <div class="timetable-cell timetable-header">Tuesday</div>
+        <div class="timetable-cell timetable-header">Wednesday</div>
+        <div class="timetable-cell timetable-header">Thursday</div>
+        <div class="timetable-cell timetable-header">Friday</div>
+
+        <pre>{{ entries }}</pre>
+
+        
+        {% for period in range(1, 9) %}
+            <div class="timetable-cell period-time">Period {{ period }}</div>
+            {% for day in range(5) %}
+                <div class="timetable-cell">
+                    {% set entry = entries.get((day, period)) %}
+                                        <h2>{{ entry}}</h2>
+
+                    {% if entry %}
+                        <div class="subject">{{ entry.subject.name }}</div>
+                        <div class="teacher">{{ entry.teacher.username }}</div>
+                    {% else %}
+                        <div class="subject">No class</div>
+                        <div class="teacher">N/A</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div> -->
+{% endblock %}
