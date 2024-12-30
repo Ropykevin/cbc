@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session,current_app
 from flask_login import login_user, logout_user, current_user, login_required
 from app.auth.forms import LoginForm, RegistrationForm
 from app.auth.forms import (
-    RegistrationStepOneForm, RegistrationStepTwoForm, RegistrationStepThreeForm
+    RegistrationStepOneForm, RegistrationStepTwoForm, RegistrationStepThreeForm,ResetPasswordRequestForm,ResetPasswordForm
 )
 from app.models.user import User
 from app.models.school import School
@@ -12,6 +12,7 @@ from app.utils.security import generate_confirmation_token, confirm_token
 from app.utils.email import send_confirmation_email
 from app.utils.email import send_password_reset_email
 from app.auth.forms import ResetPasswordRequestForm
+from app.services.auth_service import AuthService
 
 # bp = Blueprint('auth', __name__)
 
@@ -26,9 +27,10 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
+            flash('login successful','success')
             next_page = request.args.get('next')
             return redirect(next_page or url_for('main.index'))
-        flash('Invalid email or password')
+        flash('Invalid email or password','danger')
     return render_template('auth/login.html', form=form)
 
 @bp.route('/register', methods=['GET', 'POST'])
@@ -103,7 +105,7 @@ def register():
                          current_step=current_step)
 
 @bp.route('/reset_password_request', methods=['GET', 'POST'])
-@limiter.limit("5 per hour")
+@limiter.limit("100 per hour")
 def reset_password_request():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
@@ -124,9 +126,35 @@ def reset_password_request():
 @bp.route('/profile')
 @login_required
 def profile():
+    # print("mimi",current_user.username)
     return render_template('auth/profile.html', title='Profile')
 
+
+@bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+        
+    try:
+        user = AuthService.verify_reset_token(token)
+        if not user:
+            flash('Invalid or expired reset link.', 'danger')
+            return redirect(url_for('auth.login'))
+            
+        form = ResetPasswordForm()
+        if form.validate_on_submit():
+            AuthService.reset_password(user, form.password.data)
+            flash('Your password has been reset.', 'success')
+            return redirect(url_for('auth.login'))
+            
+        return render_template('auth/reset_password.html', form=form)
+        
+    except Exception as e:
+        current_app.logger.error(f"Password reset error: {str(e)}")
+        flash('Failed to reset password.', 'danger')
+        return redirect(url_for('auth.login'))
 @bp.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
+

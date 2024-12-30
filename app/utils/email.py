@@ -25,6 +25,7 @@ def send_confirmation_email(email, token):
 
 def send_password_reset_email(user):
     token = user.get_reset_password_token()
+    print('token',token)
     send_email(
         'Reset Your Password',
         sender=current_app.config['MAIL_DEFAULT_SENDER'],

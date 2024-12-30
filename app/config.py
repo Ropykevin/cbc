@@ -23,6 +23,7 @@ class Config:
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', True)
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'ropykevin@gmail.com')
     
     # Rate Limiting
     RATELIMIT_DEFAULT = "200 per day;50 per hour"

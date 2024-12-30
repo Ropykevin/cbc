@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}School Timetable Manager{% endblock %}</title>
+</head>
+
+<body style="margin: 0; padding: 0; background-color: #f8f9fa;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background-color: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            {% block content %}{% endblock %}
+        </div>
+
+        <div style="text-align: center; margin-top: 20px; color: #6c757d; font-size: 12px;">
+            <p>© 2025 School Timetable Manager. All rights reserved.</p>
+            
+        </div>
+    </div>
+</body>
+
+</html>

@@ -83,8 +83,51 @@
                             {% endif %}
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-outline-primary" 
-                                    onclick="editTeacher({{ teacher.id }})">Edit</button>
+                            <!-- Button trigger edit modal -->
+                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                edit
+                            </button>
+                            <!-- edit Modal -->
+                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/edit_product" method="post">
+                                                <div class="mb-3">
+                                                    <!-- <label for="product_id" class="form-label">Product Id</label> -->
+                                                    <input value="{{teacher.id }}" name="teacher_id" type="text" class="form-control" id="teacher_id" hidden>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <!-- <label for="product_name" class="form-label">Product Name</label> -->
+                                                    <input value="{{ teacher. }}" name="teacher_name" type="text" class="form-control" id="teacher_name">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="buying_price" class="form-label">Buying Price</label>
+                                                    <input value="{{ x[2] }}" name="buying_price" type="number" class="form-control" id="buying_price">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="selling_price" class="form-label">Selling Price</label>
+                                                    <input value="{{ x[3] }}" name="selling_price" type="number" class="form-control" id="selling_price">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="stock_quantity" class="form-label">Stock Quantity</label>
+                                                    <input value="{{ x[4] }}" name="stock_quantity" type="number" class="form-control" id="stock_quantity">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Understood</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <button class="btn btn-sm btn-outline-danger" 
                                     onclick="deleteTeacher({{ teacher.id }})">Delete</button>
                         </td>
@@ -130,7 +173,7 @@
                     <div class="mb-3">
                         <label class="form-label">Maximum Hours per Week</label>
                         {{ form.max_hours(class="form-control", required=true, 
-                                        type="number", min="1", max="40") }}
+                                        type="number", min="1", max="40") }}  
                         <div class="invalid-feedback">
                             Please enter a value between 1 and 40.
                         </div>

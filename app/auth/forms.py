@@ -71,3 +71,32 @@ class RegistrationStepThreeForm(FlaskForm):
         ('trimester', 'Trimester System'),
         ('annual', 'Annual System')
     ], validators=[DataRequired()])
+    
+class ResetPasswordForm(FlaskForm):
+        password = PasswordField('New Password', validators=[
+        DataRequired(),
+        Length(min=8, message='Password must be at least 8 characters long')
+    ])
+    
+        confirm_password = PasswordField('Confirm Password', validators=[
+        DataRequired(),
+        EqualTo('password', message='Passwords must match')
+    ])
+    
+        submit = SubmitField('Reset Password')
+    
+        def validate_password(self, field):
+            """Validate password strength"""
+            password = field.data
+            
+            # if not re.search(r'[A-Z]', password):
+            #     raise ValidationError('Password must contain at least one uppercase letter')
+                
+            # if not re.search(r'[a-z]', password):
+            #     raise ValidationError('Password must contain at least one lowercase letter')
+                
+            # if not re.search(r'\d', password):
+            #     raise ValidationError('Password must contain at least one number')
+                
+            # if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+            #     raise ValidationError('Password must contain at least one special character')
