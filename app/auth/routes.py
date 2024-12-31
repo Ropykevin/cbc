@@ -2,8 +2,9 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_user, logout_user, current_user, login_required
 from app.auth.forms import LoginForm, RegistrationForm
 from app.auth.forms import (
-    RegistrationStepOneForm, RegistrationStepTwoForm, RegistrationStepThreeForm,ResetPasswordRequestForm,ResetPasswordForm
-)
+    RegistrationStepOneForm, RegistrationStepTwoForm, RegistrationStepThreeForm,ResetPasswordRequestForm,ResetPasswordForm,\
+    EditProfileForm )
+from app.services.password_service import PasswordService
 from app.models.user import User
 from app.models.school import School
 from app.auth import bp
@@ -41,6 +42,10 @@ def register():
         session['registration_data'] = {}
     
     current_step = session.get('registration_step', 1)
+
+    if request.method == 'POST' and 'previous' in request.form:
+        session['registration_step'] = max(1, current_step - 1)
+        return redirect(url_for('auth.register'))
     
     if current_step == 1:
         form = RegistrationStepOneForm()
@@ -129,14 +134,31 @@ def profile():
     # print("mimi",current_user.username)
     return render_template('auth/profile.html', title='Profile')
 
+@bp.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    form=EditProfileForm(obj=current_user)
+    user = User.query.filter_by(email=form.email.data).first()
+    if form.validate_on_submit():
+        user.username = form.username.data
+        user.email = form.email.data
+        db.session.commit()
+        flash('Your changes have been saved.', 'success')
+        return redirect(url_for('auth.edit_profile'))
+
+
+    return render_template('admin/profile/edit.html', title='Profile',form=form)
+
 
 @bp.route('/reset-password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     if current_user.is_authenticated:
+        
         return redirect(url_for('main.index'))
         
     try:
         user = AuthService.verify_reset_token(token)
+        print("user.......", user)
         if not user:
             flash('Invalid or expired reset link.', 'danger')
             return redirect(url_for('auth.login'))

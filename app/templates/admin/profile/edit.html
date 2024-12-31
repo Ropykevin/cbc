@@ -88,7 +88,7 @@
                         <strong>School:</strong> {{ current_user.school.name }}
                     </div>
                     <div class="mb-3">
-                        <strong>Member Since:</strong> {{ current_user.created_at|datetime }}
+                        <strong>Member Since:</strong> {{ current_user.created_at.strftime('%B %d, %Y %I:%M %p') }}
                     </div>
                 </div>
             </div>

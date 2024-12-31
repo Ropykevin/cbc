@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container py-5" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; margin-top: 0;width: auto;">
+<div class="container py-5"
+    style="display: flex; justify-content: center; align-items: center; min-height: 100vh; margin-top: 0;width: auto;">
     <div class="row justify-content-center" style="width: 100%; max-width: 800px; margin-top: 50px;">
         <div class="col-lg-8">
             <div class="card shadow-sm">
@@ -31,6 +32,7 @@
 
                     <!-- Form Steps -->
                     <form method="POST" class="needs-validation mt-5" novalidate>
+                        <input type="hidden" name="current_step" value="{{ current_step }}">
                         {{ form.hidden_tag() }}
                         {% if current_step == 1 %}
                         <!-- School Details -->
@@ -69,7 +71,8 @@
                         <div class="mb-3">
                             <label class="form-label">Password*</label>
                             {{ form.password(class="form-control", required=true) }}
-                            <div class="form-text">Must be at least 8 characters, with uppercase, lowercase, and a number.</div>
+                            <div class="form-text">Must be at least 8 characters, with uppercase, lowercase, and a
+                                number.</div>
                             <div class="invalid-feedback">Please enter a valid password.</div>
                         </div>
                         <div class="mb-3">
@@ -78,17 +81,7 @@
                             <div class="invalid-feedback">Passwords do not match.</div>
                         </div>
                         {% else %}
-                        <!-- Class Configuration -->
-                        <div class="mb-3">
-                            <label class="form-label">Grade Levels*</label>
-                            {{ form.grade_levels(class="form-select", multiple=true, required=true) }}
-                            <div class="invalid-feedback">Please select at least one grade level.</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Streams per grade*</label>
-                            {{ form.sections_per_grade(class="form-control", type="number", required=true) }}
-                            <div class="invalid-feedback">Please specify sections per grade.</div>
-                        </div>
+                       
                         <div class="mb-3">
                             <label class="form-label">Academic Year Structure*</label>
                             {{ form.academic_structure(class="form-select", required=true) }}
@@ -99,12 +92,14 @@
                         <!-- Navigation Buttons -->
                         <div class="d-flex justify-content-between mt-4">
                             {% if current_step > 1 %}
-                            <button type="submit" name="previous" class="btn btn-secondary">Previous</button>
+                            <button type="submit" name="previous" class="btn btn-secondary">Previous
+                            </button>
+
                             {% else %}
                             <div></div>
                             {% endif %}
                             <button type="submit" name="next" class="btn btn-primary">
-                                {% if current_step == 3 %}Complete Registration{% else %}Next{% endif %}
+                                {% if current_step == 3 %}Complete Registration{% endif %}
                             </button>
                         </div>
                     </form>
@@ -115,20 +110,64 @@
 </div>
 {% endblock %}
 
+{% block styles %}
+<style>
+    /* Default step circle style */
+    .step-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #ddd;
+        /* Default background */
+        color: #333;
+        /* Default text color */
+        font-weight: bold;
+        border: 2px solid #ddd;
+        transition: all 0.3s ease;
+    }
+
+    /* Active step circle style */
+    .step-item.active .step-circle {
+        background-color: #ff6700;
+        /* Active background color */
+        color: white;
+        /* Active text color */
+        border-color: #ff6700;
+        /* Active border color */
+    }
+
+    /* Line between steps */
+    .step-line {
+        height: 2px;
+        background-color: #ddd;
+        /* Default line color */
+    }
+
+    /* Active line */
+    .step-line.active {
+        background-color: #ff6700;
+        /* Active line color */
+    }
+</style>
+{% endblock %}
+
 {% block scripts %}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Form validation
-    const forms = document.querySelectorAll('.needs-validation');
-    Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            form.classList.add('was-validated');
-        }, false);
+    document.addEventListener('DOMContentLoaded', function () {
+        // Form validation
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
     });
-});
 </script>
 {% endblock %}

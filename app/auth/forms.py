@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField,SelectMultipleField, IntegerField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length
 from app.models.school import School
+import re
 
 class LoginForm(FlaskForm):
     email = StringField('email', validators=[DataRequired()])
@@ -48,7 +49,8 @@ class RegistrationStepOneForm(FlaskForm):
     school_type = SelectField('School Type', choices=[
         ('primary', 'Primary School'),
         ('secondary', 'Secondary School'),
-        ('both', 'Primary and Secondary')
+        ('both', 'Primary and Secondary'),
+        ('other', 'Other')
     ], validators=[DataRequired()])
 
 class RegistrationStepTwoForm(FlaskForm):
@@ -62,14 +64,14 @@ class RegistrationStepTwoForm(FlaskForm):
     password_confirm = PasswordField('Confirm Password')
 
 class RegistrationStepThreeForm(FlaskForm):
-    grade_levels = SelectMultipleField('Grade Levels', coerce=int, choices=[
-        (i, f'Grade {i}') for i in range(1, 13)
-    ], validators=[DataRequired()])
-    sections_per_grade = IntegerField('Sections per Grade', validators=[DataRequired()])
+#     grade_levels = SelectMultipleField('Grade Levels', coerce=int, choices=[
+#         (i, f'Grade {i}') for i in range(1, 13)
+#     ], validators=[DataRequired()])
+#     sections_per_grade = IntegerField('Sections per Grade', validators=[DataRequired()])
     academic_structure = SelectField('Academic Year Structure', choices=[
-        ('semester', 'Semester System'),
-        ('trimester', 'Trimester System'),
-        ('annual', 'Annual System')
+        ('semester', 'three-term System'),
+        ('trimester', 'two-term System'),
+        ('annual', 'One-term System')
     ], validators=[DataRequired()])
     
 class ResetPasswordForm(FlaskForm):
@@ -89,14 +91,20 @@ class ResetPasswordForm(FlaskForm):
             """Validate password strength"""
             password = field.data
             
-            # if not re.search(r'[A-Z]', password):
-            #     raise ValidationError('Password must contain at least one uppercase letter')
+            if not re.search(r'[A-Z]', password):
+                raise ValidationError('Password must contain at least one uppercase letter')
                 
-            # if not re.search(r'[a-z]', password):
-            #     raise ValidationError('Password must contain at least one lowercase letter')
+            if not re.search(r'[a-z]', password):
+                raise ValidationError('Password must contain at least one lowercase letter')
                 
-            # if not re.search(r'\d', password):
-            #     raise ValidationError('Password must contain at least one number')
+            if not re.search(r'\d', password):
+                raise ValidationError('Password must contain at least one number')
                 
-            # if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
-            #     raise ValidationError('Password must contain at least one special character')
+            if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+                raise ValidationError('Password must contain at least one special character')
+            
+
+class EditProfileForm(FlaskForm):
+    username = StringField('username', validators=[DataRequired(), Length(min=2, max=100)])
+    email = StringField('Work Email', validators=[DataRequired(), Email()])
+    

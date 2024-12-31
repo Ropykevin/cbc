@@ -6,7 +6,9 @@ import jwt
 from app.extensions import db
 from app.models.user import User
 from app.models.school import School
-from app.services.email_service import EmailService
+from app.services.password_service import PasswordService
+# from app.utils.email import send_verification_email
+
 
 class AuthService:
     @staticmethod
@@ -44,28 +46,10 @@ class AuthService:
             raise
 
     @staticmethod
-    def verify_email(token: str) -> bool:
-        """Verify user's email address"""
-        try:
-            data = jwt.decode(
-                token, 
-                current_app.config['SECRET_KEY'],
-                algorithms=['HS256']
-            )
-            user = User.query.get(data['user_id'])
-            if user:
-                user.email_verified = True
-                db.session.commit()
-                return True
-        except Exception as e:
-            current_app.logger.error(f"Email verification error: {str(e)}")
-            return False
-        return False
-
-    @staticmethod
     def send_verification_email(user: User) -> None:
         """Send email verification link"""
         try:
+            
             token = jwt.encode(
                 {
                     'user_id': user.id,
@@ -74,8 +58,40 @@ class AuthService:
                 current_app.config['SECRET_KEY'],
                 algorithm='HS256'
             )
-            
-            EmailService.send_verification_email(user.email, token)
+            # send_verification_email(user.email, token)
         except Exception as e:
             current_app.logger.error(f"Send verification email error: {str(e)}")
             raise
+
+    @staticmethod
+    def verify_email(token: str) -> bool:
+        """Verify user's email address"""
+        try:
+            data = jwt.decode(
+                token,
+                current_app.config['SECRET_KEY'],
+                algorithms=['HS256']
+            )
+            user = User.query.filter_by(email=data.get('email')).first()
+            if user:
+                user.email_verified = True
+                db.session.commit()
+                return True
+        except jwt.ExpiredSignatureError:
+            current_app.logger.error("Email verification token expired.")
+        except jwt.InvalidTokenError:
+            current_app.logger.error("Invalid email verification token.")
+        except Exception as e:
+            current_app.logger.error(f"Email verification error: {str(e)}")
+        return False
+
+    @staticmethod
+    def verify_reset_token(token: str) -> Optional[User]:
+        
+        print("Verify reset token and return user", token)
+        return PasswordService.verify_reset_token(token)
+
+    @staticmethod
+    def reset_password(user: User, new_password: str) -> bool:
+        """Reset user's password"""
+        return PasswordService.reset_password(user, new_password)
