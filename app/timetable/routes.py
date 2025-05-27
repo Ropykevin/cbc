@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 from app.timetable import bp
-from app.models.timetable import Class, TimetableEntry
+from app.models.timetable import ClassStream, TimetableEntry
 from app.models.curriculum import CurriculumSubject
 from app.utils.timetable_generator import TimetableGenerator
 from app.utils.security import admin_required, premium_required

@@ -6,7 +6,6 @@ class Teacher(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     school_id = db.Column(db.Integer, db.ForeignKey('school.id'), nullable=False)
     teacher_code = db.Column(db.String(10), unique=True, nullable=False)
-    max_hours_per_week = db.Column(db.Integer, default=30)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -35,7 +34,7 @@ class Teacher(db.Model):
         """Current number of hours assigned to the teacher."""
         return self.timetable_entries.count()
     
-    @property
-    def available_hours(self):
-        """Available hours the teacher can take."""
-        return self.max_hours_per_week - self.current_hours
+    # @property
+    # def available_hours(self):
+    #     """Available hours the teacher can take."""
+    #     return self.max_hours_per_week - self.current_hours

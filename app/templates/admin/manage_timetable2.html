@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate Timetable</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f9;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .timetable {
+      margin-top: 20px;
+    }
+
+    .timetable h2 {
+      text-align: center;
+    }
+
+    .day {
+      margin-bottom: 15px;
+    }
+
+    .lesson {
+      margin: 5px 0;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      padding: 5px;
+      background-color: #f8f9fa;
+      margin-bottom: 5px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Generate Timetable</h1>
+
+    <form action="{{ url_for('admin.generate_timetable2') }}" method="POST">
+      {{ csrf_token() }}
+    <div>
+  
+      <label for="classStreamId">Class Stream ID:</label>
+      <input type="text" name="class_stream_id" id="classStreamId" placeholder="Enter Class Stream ID">
+    </div>
+
+    <button type="submit"> Timetable</button>
+  </form>
+    <div class="error" id="error-message"></div>
+
+    <div class="timetable" id="timetable">
+      <!-- Timetable will be displayed here -->
+    </div>
+  </div>
+
+  <script>
+    async function generateTimetable() {
+      const classStreamId = document.getElementById('classStreamId').value.trim();
+      console.log("Class Stream ID:", classStreamId); // Debugging
+
+      const errorMessage = document.getElementById('error-message');
+      const timetableElement = document.getElementById('timetable');
+
+      errorMessage.textContent = '';
+      timetableElement.innerHTML = '';
+
+      if (!classStreamId) {
+        errorMessage.textContent = 'Class Stream ID is required';
+        return;
+      }
+
+      try {
+        const requestBody = JSON.stringify({ class_stream_id: parseInt(classStreamId, 10) });
+        console.log("Request Body:", requestBody); // Debugging
+
+        const response = await fetch('http://127.0.0.1:5000/admin/generate-timetable-grade-4-6', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: requestBody,
+        });
+
+        console.log("Response Status:", response.status); // Debugging
+        const data = await response.json();
+        console.log("Response Data:", data); // Debugging
+
+        if (response.ok) {
+          displayTimetable(data);
+        } else {
+          errorMessage.textContent = data.error || 'An error occurred while generating the timetable.';
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+        errorMessage.textContent = 'An error occurred while generating the timetable.';
+      }
+    }
+
+  </script>
+
+</body>
+
+</html>

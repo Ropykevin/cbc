@@ -13,7 +13,7 @@ class School(db.Model):
     
     # Relationships
     users = db.relationship('User', backref='school', lazy=True)
-    classes = db.relationship('Class', backref='school', lazy=True)
+    classes = db.relationship('ClassStream', backref='school', lazy=True)
     subjects = db.relationship('Subject', backref='school', lazy=True)
 
     def has_premium_subscription(self):

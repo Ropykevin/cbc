@@ -9,6 +9,15 @@ a {
     color: #e38cb7;
 }
 
+.custom-select-width {
+    width: 100%;
+}
+
+#addFieldButton {
+    padding: 0.2rem 0.6rem;
+   
+}
+
 a:hover,
 a:focus {
     color: #d6619c;

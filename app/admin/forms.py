@@ -4,65 +4,43 @@ TimeField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, NumberRange, ValidationError,Regexp,EqualTo
 from app.models.curriculum import CurriculumSubject
 from app.models.teacher import Teacher
-from app.models.timetable import Subject
+from app.models.timetable import Subject,GradeLevel
 
 
 class SubjectForm(FlaskForm):
 
-    subject = SelectField('Select Subject', coerce=int, validators=[DataRequired()])
-    lessons_per_week = IntegerField('Lessons per week', default=1)
-    max_consecutive_periods = IntegerField('max_consecutive_periods', default=1)
+    subject = SelectField('Select Subject', coerce=int)
+    # max_consecutive_periods = IntegerField('max_consecutive_periods', default=1)
+    grade_level = SelectMultipleField('Grade Level', coerce=int)
 
     def __init__(self, *args, **kwargs): 
         super(SubjectForm, self).__init__(*args, **kwargs)
         subjects = CurriculumSubject.query.all() 
         self.subject.choices = [(subject.id, subject.name) for subject in subjects]
-    # name = StringField('Subject Name', validators=[
-    #     DataRequired(),
-    #     Length(min=2, max=50, message="Name must be between 2 and 50 characters")
-    # ])
-    
-    # code = StringField('Subject Code', validators=[
-    #     DataRequired(),
-    #     Length(min=2, max=10),
-    #     Regexp(r'^[A-Z0-9]+$', message="Code must contain only uppercase letters and numbers")
-    # ])
-    
-    # color_code = StringField('Color Code', validators=[
-    #     DataRequired(),
-    #     Regexp(r'^#[0-9A-Fa-f]{6}$', message="Must be a valid hex color code (e.g., #FF0000)")
-    # ], default='#FFFFFF')
-    
-    # max_consecutive_periods = IntegerField('Maximum Consecutive Periods', validators=[
-    #     DataRequired(),
-    #     NumberRange(min=1, max=4, message="Must be between 1 and 4 periods")
-    # ], default=2)
-    
-    # lessons_per_week = IntegerField('Lessons per Week', validators=[
-    #     DataRequired(),
-    #     NumberRange(min=1, max=10, message="Must be between 1 and 10 lessons")
-    # ], default=1)
-    
-    # submit = SubmitField('Save Subject')
+   
 
 class ClassForm(FlaskForm):
     name = StringField('Class Name', validators=[
         DataRequired(),
         Length(min=2, max=20, message="Name must be between 2 and 20 characters")
     ])
-    
-    grade_level = IntegerField('Grade Level', validators=[
-        DataRequired(),
-        NumberRange(min=1, max=12, message="Grade must be between 1 and 12")
+    subjects = SelectMultipleField('Teaching Subjects', coerce=int, validators=[DataRequired()])
+    grade_level = SelectField('Grade Level', coerce=int, validators=[
+        DataRequired()
     ])
     
-    section = StringField('Section', validators=[
-        DataRequired(),
-        Length(max=10, message="Section identifier must not exceed 10 characters")
-    ])
+    # section = StringField('Section', validators=[
+    #     DataRequired(),
+    #     Length(max=10, message="Section identifier must not exceed 10 characters")
+    # ])
     
     submit = SubmitField('Save Class')
     
+    # def __init__(self, *args, **kwargs):
+    #     super(ClassForm, self).__init__(*args, **kwargs)
+    #     # Populate the dropdown dynamically
+    #     self.grade_level.choices = [(grade.id, grade.name) for grade in GradeLevel.query.all()]
+
     def validate_name(self, field):
         if not any(c.isalpha() for c in field.data):
             raise ValidationError("Class name must contain at least one letter")
@@ -80,11 +58,11 @@ class TeacherForm(FlaskForm):
         Length(max=120)
     ])
 
-    max_hours = IntegerField('Maximum Hours per Week', validators=[
-        DataRequired(),
-        NumberRange(min=1, max=40, message="Hours must be between 1 and 40")
-    ])
-
+    # max_hours = IntegerField('Maximum Hours per Week', validators=[
+    #     DataRequired(),
+    #     NumberRange(min=1, max=40, message="Hours must be between 1 and 40")
+    # ])
+    grade_level = SelectMultipleField('Grade Levels', coerce=int)
     subjects = SelectMultipleField('Teaching Subjects', coerce=int, validators=[DataRequired()])
 
     submit = SubmitField('Save Teacher')
@@ -162,3 +140,23 @@ class PeriodForm(FlaskForm):
         if self.start_time.data and field.data:
             if field.data <= self.start_time.data:
                 raise ValidationError("End time must be after start time")
+            
+class PaymentForm(FlaskForm):
+    phone_number = StringField('Phone Number', validators=[
+        DataRequired(),
+        Regexp(r'^[7|1][0-9]{8}$', message='Please enter a valid Kenyan phone number')
+    ])
+    submit = SubmitField('Pay Now')
+    
+    def validate_phone_number(self, field):
+        # Additional custom validation if needed
+        if not field.data.isdigit():
+            raise ValidationError('Phone number must contain only digits')
+        
+class AssignTimetableForm(FlaskForm):
+    grade_level = SelectField('Grade Level', validators=[DataRequired()])
+    stream = SelectField('Stream', validators=[DataRequired()])
+    subjects = SelectField('Subject', validators=[DataRequired()])
+    teacher = SelectMultipleField('Teacher',coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Generate Timetable')
+

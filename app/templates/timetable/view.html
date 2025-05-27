@@ -3,7 +3,58 @@
 {% block title %}Timetable{% endblock %}
 
 {% block content %}
+<style>
+    /* Regular table styles */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f4f4f4;
+    }
+
+    /* Styling for print */
+    @media print {
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        #print-button {
+            display: none; /* Hide the print button on print */
+        }
+
+        #timetable-container {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            border: 1px solid black;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #000;
+        }
+    }
+</style>
 <div class="container">
+
+    <button id="download-pdf" class="btn btn-primary">Download Timetable (Printable PDF)</button>
+    <button id="print-button" class="btn btn-primary">Print Timetable</button>
+
+
+
     {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] %}
     <h1 class="mb-4">Timetable for Class: {{ class_name }} (ID: {{ class_id }})</h1>
     
@@ -13,7 +64,7 @@
             <div class="timetable-cell timetable-header">{{ day }}</div>
         {% endfor %}
         
-        {% for period in range(1, 9) %}
+        {% for period in range(0, 8) %}
             <div class="timetable-cell period-time">Period {{ period }}</div>
             {% for day in days %}
                 <div class="timetable-cell">
@@ -65,4 +116,30 @@
         {% endfor %}
     </div>
 </div> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- jsPDF AutoTable Plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.19/jspdf.plugin.autotable.min.js"></script>
+<script>
+    document.getElementById('download-pdf').addEventListener('click', function () {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Add a title to the PDF
+        doc.setFontSize(18);
+        doc.text('Grade 4-6 Timetable', 105, 20, { align: 'center' });
+
+        // Generate the table inside the PDF
+        doc.autoTable({ html: '#timetable-container table' });
+
+        // Save the PDF to the user's device
+        doc.save('timetable.pdf');
+    });
+</script>
+<script>
+    document.getElementById('print-button').addEventListener('click', function () {
+        window.print(); // This will open the print dialog
+    });
+</script>
+
+
 {% endblock %}

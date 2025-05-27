@@ -62,6 +62,7 @@
                                 <!-- <th>Color</th> -->
                                 <th>Lessons/Week</th>
                                 <th>Max Consecutive</th>
+                                <!-- <th> Grade </th> -->
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -80,13 +81,15 @@
                             </td> -->
                                 <td>{{ subject.lessons_per_week }}</td>
                                 <td>{{ subject.max_consecutive_periods }}</td>
+                                
+                                
                                 <td>
                                     <button class="btn btn-sm btn-outline-primary"
-                                        onclick="editSubject({{ subject.id }})">
+                                        onclick="editSubject({{ subject.id }})"> Edit
                                         <i class="bi bi-pencil"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-danger"
-                                        onclick="deleteSubject({{ subject.id }})">
+                                        onclick="deleteSubject({{ subject.id }})">Delete
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
@@ -105,7 +108,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Add New Subject</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-outline-danger" data-bs-dismiss="modal"> X </button>
                 </div>
                 <div class="modal-body">
                     <form method="POST" action="{{ url_for('admin.add_subject') }}">
@@ -115,13 +118,10 @@
                             {{ form.subject(class="form-control") }}
                         </div>
                         <div class="form-group">
-                            <label for="lessons_per_week">Lessons per Week</label>
-                            {{ form.lessons_per_week(class="form-control") }}
+                            <label for="lessons_per_week">Grade Level</label>
+                            {{ form.grade_level(class="form-control", multiple=True) }}
                         </div>
-                        <div class="form-group">
-                            <label for="maximum_consecutive_periods">Maximum Consecutive Periods*</label>
-                            {{ form.max_consecutive_periods(class="form-control") }}
-                        </div>
+                       
                         <button type="submit" class="btn btn-primary">Add Subject</button>
                     </form>
 

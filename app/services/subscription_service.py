@@ -2,8 +2,10 @@ from datetime import datetime, timedelta
 from typing import Dict, Optional
 from app.extensions import db
 from app.models.subscription import SubscriptionTier
-from app.models.subscription_feature import SubscriptionFeature
+from app.models.subscription import SubscriptionFeature
 from app.models.school import School
+from app.models.subscription import SubscriptionPackage, SubscriptionTransaction
+from app.services.mpesa_service import MpesaService
 
 class SubscriptionService:
     @staticmethod
@@ -93,3 +95,80 @@ class SubscriptionService:
                 db.session.add(feature_obj)
 
         db.session.commit()
+
+    @staticmethod
+    def get_packages():
+        """Get all available subscription packages"""
+        return SubscriptionPackage.query.all()
+
+    @staticmethod
+    def initiate_payment(user_id: int, package_id: int, phone_number: str) -> dict:
+        """Initiate subscription payment"""
+        try:
+            package = SubscriptionPackage.query.get_or_404(package_id)
+            
+            # Create pending transaction
+            transaction = SubscriptionTransaction(
+                user_id=user_id,
+                package_id=package_id,
+                amount=package.price,
+                payment_method='mpesa',
+                status='pending'
+            )
+            db.session.add(transaction)
+            db.session.flush()
+            
+            # Initiate M-PESA payment
+            reference = f"SUB{transaction.id}"
+            payment = MpesaService.initiate_stk_push(
+                phone_number=phone_number,
+                amount=package.price,
+                reference=reference
+            )
+            
+            if payment['success']:
+                transaction.transaction_id = payment['checkout_id']
+                db.session.commit()
+                return {'success': True, 'checkout_id': payment['checkout_id']}
+            
+            db.session.rollback()
+            return {'success': False, 'message': payment['message']}
+            
+        except Exception as e:
+            db.session.rollback()
+            return {'success': False, 'message': str(e)}
+
+    @staticmethod
+    def complete_subscription(checkout_id: str) -> dict:
+        """Complete subscription after successful payment"""
+        try:
+            # Verify payment
+            payment = MpesaService.verify_transaction(checkout_id)
+            if not payment['success']:
+                return payment
+            
+            # Update transaction
+            transaction = SubscriptionTransaction.query.filter_by(
+                transaction_id=checkout_id
+            ).first()
+            
+            if not transaction:
+                return {'success': False, 'message': 'Transaction not found'}
+            
+            package = SubscriptionPackage.query.get(transaction.package_id)
+            
+            transaction.status = 'completed'
+            transaction.payment_date = datetime.utcnow()
+            transaction.start_date = datetime.utcnow()
+            transaction.end_date = datetime.utcnow() + timedelta(days=30 * package.duration_months)
+            
+            db.session.commit()
+            
+            return {
+                'success': True,
+                'message': 'Subscription activated successfully'
+            }
+            
+        except Exception as e:
+            db.session.rollback()
+            return {'success': False, 'message': str(e)}

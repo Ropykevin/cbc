@@ -61,7 +61,7 @@
                             <ul class="navbar-nav">
                                 {% if current_user.is_authenticated %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{  url_for('admin.timetable')  }}">myTimetables</a>
+                                    <a class="nav-link" href="{{  url_for('admin.new_timetable')  }}">myTimetables</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ url_for('admin.dashboard') }}">My Package</a>
@@ -117,16 +117,24 @@
     <!-- Flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-    <div style="position: absolute; top: 10%; left: 20%; text-align: center;" class="container mt-3">
+    <div style="position: absolute; top: 10%; right: 5px; width: 50%; text-align: center;" class="container mt-3">
         {% for category, message in messages %}
-        <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show">
+        <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         {% endfor %}
     </div>
+    <script>
+        // Automatically hide alerts after 3 seconds
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => alert.classList.remove('show'));
+        }, 3000); // 3000 milliseconds = 3 seconds
+    </script>
     {% endif %}
-    {% endwith %}
+{% endwith %}
+
 
     <!-- Content Block -->
     <div class="content" style="padding-top: 100px;">  <!-- Adjust padding to match navbar height -->
@@ -253,6 +261,130 @@
         // }
     
     </script>
+   <script>
+    document.getElementById('addFieldButton').addEventListener('click', function () {
+        // Clone only the teaching subjects and grade levels field set
+        const container = document.getElementById('dynamicFieldsContainer');
+        const firstFieldSet = container.querySelector('.dynamic-field-set');
+        const newFieldSet = firstFieldSet.cloneNode(true);
+
+        // Clear the values in the cloned fields (reset select dropdowns)
+        const inputs = newFieldSet.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            if (input.tagName.toLowerCase() === 'select') {
+                input.selectedIndex = -1; // Reset select dropdowns
+            } else {
+                input.value = ''; // Clear text inputs (e.g., name and email)
+            }
+        });
+
+        // Append the cloned fields below the last set of fields
+        container.appendChild(newFieldSet);
+    });
+</script>
+<script>
+    function editTeacher(teacherId) {
+        // Implement edit functionality
+    }
+
+    function deleteTeacher(teacherId) {
+        if (confirm('Are you sure you want to delete this teacher?')) {
+            fetch(`/admin/teachers/${teacherId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                }
+            });
+        }
+    }
+</script>
+
+<!-- delete subject -->
+<script>
+    function editSubject(subjectId) {
+        // Implement edit functionality
+    }
+
+    function deleteSubject(subjectId) {
+        if (confirm('Are you sure you want to delete this subject?')) {
+            fetch(`/admin/subjects/delete/${subjectId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                }
+            });
+        }
+    }
+
+    // Update color code text when color picker changes
+    document.querySelector('input[type="color"]').addEventListener('input', function (e) {
+        this.nextElementSibling.textContent = e.target.value.toUpperCase();
+    });
+</script>
+<script>
+    async function generateTimetable() {
+      const classStreamId = document.getElementById('classStreamId').value;
+      const errorMessage = document.getElementById('error-message');
+      const timetableElement = document.getElementById('timetable');
+      
+      // Clear previous error or timetable
+      errorMessage.textContent = '';
+      timetableElement.innerHTML = '';
+
+      if (!classStreamId) {
+        errorMessage.textContent = 'Class Stream ID is required';
+        return;
+      }
+
+      try {
+        const response = await fetch('/admin/generate-timetable-grade-4-6', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ class_stream_id: classStreamId }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          displayTimetable(data);
+        } else {
+          errorMessage.textContent = data.error || 'An error occurred while generating the timetable.';
+        }
+      } catch (err) {
+        errorMessage.textContent = 'An error occurred while generating the timetable.';
+      }
+    }
+
+    function displayTimetable(timetable) {
+      const timetableElement = document.getElementById('timetable');
+      let timetableHTML = '<h2>Generated Timetable</h2>';
+
+      for (const day in timetable) {
+        timetableHTML += `
+          <div class="day">
+            <h3>${day}</h3>
+            <ul>
+              ${timetable[day].map((entry) => `
+                <li class="lesson">Lesson ${entry.lesson}: ${entry.subject_name} - ${entry.teacher_name}</li>
+              `).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      timetableElement.innerHTML = timetableHTML;
+    }
+  </script>
 
 </body>
 

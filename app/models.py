@@ -10,7 +10,7 @@ class School(db.Model):
     phone = db.Column(db.String(20))
     subscription_type = db.Column(db.String(20), default='free')
     users = db.relationship('User', backref='school', lazy=True)
-    classes = db.relationship('Class', backref='school', lazy=True)
+    classes = db.relationship('ClassStream', backref='school', lazy=True)
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -26,7 +26,7 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-class Class(db.Model):
+class ClassStream(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
     grade_level = db.Column(db.Integer, nullable=False)
@@ -47,6 +47,7 @@ class TimetableEntry(db.Model):
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'))
     teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     class_id = db.Column(db.Integer, db.ForeignKey('class.id'))
+
 
 @login_manager.user_loader
 def load_user(id):

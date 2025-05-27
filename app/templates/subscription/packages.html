@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">Choose Your Plan</h1>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for package in packages %}
+        <div class="col">
+            <div class="card h-100 {% if package.recommended %}border-primary{% endif %}">
+                <div class="card-header {% if package.recommended %}bg-primary text-white{% endif %}">
+                    <h3 class="card-title text-center mb-0">{{ package.name }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h2 class="display-6">KES {{ package.price }}</h2>
+                        <p class="text-muted">per {{ package.duration }}</p>
+                    </div>
+                    
+                    <ul class="list-unstyled mb-4">
+                        {% for feature in package.features %}
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            {{ feature }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <form method="POST" action="{{ url_for('subscription.select_package') }}">
+                        <input type="hidden" name="package_id" value="{{ package.id }}">
+                        <button type="submit" class="btn btn-primary w-100">Subscribe Now</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
